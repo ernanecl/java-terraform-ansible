@@ -1,0 +1,8 @@
+com/spring/danilo/web/teste/models/PedidoDoCliente.class
+com/spring/danilo/web/teste/ValidadorCpfApp.class
+com/spring/danilo/web/teste/services/ClienteService.class
+com/spring/danilo/web/teste/models/Fornecedor.class
+com/spring/danilo/web/teste/models/Cliente.class
+com/spring/danilo/web/teste/controllers/ValidarCpfController.class
+com/spring/danilo/web/teste/controllers/SobreController.class
+com/spring/danilo/web/teste/controllers/HomeController.class
