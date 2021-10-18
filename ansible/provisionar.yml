@@ -1,0 +1,118 @@
+- hosts: all
+
+  tasks:
+    - name: 'add open jdk repository'
+      apt_repository:
+        repo: 'ppa:openjdk-r/ppa'
+        state: present
+        update_cache: yes
+      become: yes
+
+
+    - name: 'Install open jkd and git'
+      become: yes
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - openjdk-11-jdk
+        - git        
+
+    - name: 'set java version 11 as main'
+      alternatives:
+        name: java
+        path: /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java 
+
+
+    - name: update certificate java
+      shell: update-ca-certificates -f
+      become: yes
+
+  
+    - name: "Roda: sudo apt-get update"
+      become: yes
+      apt:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 86400 #Um dia
+
+    # - name: "Instala pacotes"
+    #   apt:
+    #     name: "{{ item }}"
+    #     state: latest
+    #   become: yes # roda com sudo
+    #   with_items:
+    #     - nginx
+    #     - nodejs
+    #     - npm
+
+    - name: "clone projeto"
+      ansible.builtin.git:
+        repo: 'git@github.com:ernanecl/java-app-deploy-academia-devops.git'
+        dest: /home/ubuntu/java-app-deploy-academia-devops
+        clone: yes
+        update: yes
+
+    # - name: "fazendo build do projeto"
+    #   shell: "cd /home/ubuntu/nodejs-tdd-terraform-ansible/itau-tdd-lab && npm install && nohup npm start &"
+    
+    # - name: "Trocando nginx para ler a VPS"
+    #   copy:
+    #     src: "nginx/default"
+    #     dest: "/etc/nginx/sites-available/default"
+    #   become: yes
+    #   notify:
+    #     - "restart nginx"
+    - name: install packages required by docker
+      become: true
+      apt:
+        update_cache: yes
+        state: latest
+        name:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gpg-agent
+        - software-properties-common
+
+    - name: add docker GPG key
+      become: true
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: add docker apt repo
+      become: true
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu bionic stable
+        state: present
+
+    - name: install docker
+      become: true
+      apt:
+        update_cache: yes
+        state: latest
+        name:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+
+    - name: "Restart docker"
+      shell: sudo systemctl restart docker
+      become: yes
+
+    - name: "Fazer pull do docker"
+      shell: "docker pull ernanecl/app-java-validacao-cnpj"
+      become: yes
+
+    - name: "Roda o container"
+      shell: "docker run -d -p 3000:3000 --name app-java-validacao-cnpj ernanecl/app-java-validacao-cnpj"
+      become: yes
+    
+    # - name: "Trocando nginx para ler a VPS"
+    #   copy:
+    #     src: "nginx/default"
+    #     dest: "/etc/nginx/sites-available/default"
+    #   become: yes
+    #   notify:
+    #     - "restart nginx"

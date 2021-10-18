@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<html>
+  <head>
+    <title>Validação de CPF com turma 15C</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+  </head>
+  <body class="container">
+    <h2>A validação de CPF do <span th:text="${cliente.nome}"></span> que passou o CPF <span th:text="${cliente.cpf}"></span></h2>
+    <div th:if="${validado}" class="alert alert-success" role="alert">foi validada como válido</div>
+    <div th:if="${!validado}" class="alert alert-danger" role="alert">foi validada como inválido</div>
+  </body>
+</html>
